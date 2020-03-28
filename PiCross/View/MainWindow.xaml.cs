@@ -44,13 +44,8 @@ namespace View
             playablePuzzle.Grid[new Vector2D(1, 0)].Contents.Value = Square.EMPTY;
 
             picrossControl.Grid = playablePuzzle.Grid;
-            picrossControl.RowConstraints = Sequence.FromItems(
-                new int[] {1, 2},
-                new int[] {4},
-                new int[] {1, 1},
-                new int[] {1, 1},
-                new int[] {1, 1, 1}
-                );
+            picrossControl.RowConstraints = playablePuzzle.RowConstraints;
+            picrossControl.ColumnConstraints = playablePuzzle.ColumnConstraints;
         }
     }
 
