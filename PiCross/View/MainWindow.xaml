@@ -11,11 +11,11 @@
         <controls:PiCrossControl x:Name="picrossControl">
             <controls:PiCrossControl.SquareTemplate>
                 <DataTemplate>
-                    <Rectangle Width="32" Height="32" Stroke="Black">
+                    <Rectangle Width="32" Height="32" Stroke="Black" MouseDown="On_click">
                         <Rectangle.Fill>
                             <Binding Path="Contents.Value">
                                 <Binding.Converter>
-                                    <local:SquareConverter Empty="White" Filled="Black" Unknown="Gray" />
+                                    <local:SquareConverter Empty="White" Filled="Black" Unknown="Gray"/>
                                 </Binding.Converter>
                             </Binding>
                         </Rectangle.Fill>
@@ -32,7 +32,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Width="32" Height="32" Text="{Binding Value}" />
+                                <TextBlock Width="32" Height="32" Text="{Binding Value}" TextAlignment="Center"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -48,7 +48,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Width="32" Height="32" Text="{Binding Value}" />
+                                <TextBlock Width="32" Height="32" Text="{Binding Value}" TextAlignment="Center"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

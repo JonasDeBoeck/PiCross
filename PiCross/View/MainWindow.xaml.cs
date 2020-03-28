@@ -40,12 +40,29 @@ namespace View
             var facade = new PiCrossFacade();
             var playablePuzzle = facade.CreatePlayablePuzzle(puzzle);
 
-            playablePuzzle.Grid[new Vector2D(0, 0)].Contents.Value = Square.FILLED;
-            playablePuzzle.Grid[new Vector2D(1, 0)].Contents.Value = Square.EMPTY;
-
             picrossControl.Grid = playablePuzzle.Grid;
             picrossControl.RowConstraints = playablePuzzle.RowConstraints;
             picrossControl.ColumnConstraints = playablePuzzle.ColumnConstraints;
+        }
+
+        private void On_click(object sender, MouseButtonEventArgs e)
+        {
+            var rect = sender as Rectangle;
+            var data = rect.DataContext as IPlayablePuzzleSquare;
+            if (e.MouseDevice.LeftButton == MouseButtonState.Pressed)
+            {
+                if (data.Contents.Value == Square.EMPTY || data.Contents.Value == Square.UNKNOWN)
+                {
+                    data.Contents.Value = Square.FILLED;
+                }
+                else
+                {
+                    data.Contents.Value = Square.EMPTY;
+                }
+            } else if (e.MouseDevice.RightButton == MouseButtonState.Pressed)
+            {
+                data.Contents.Value = Square.UNKNOWN;
+            }
         }
     }
 
