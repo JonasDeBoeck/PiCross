@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="View.screens.PuzzleSelection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:View.screens"
+             xmlns:converters="clr-namespace:View.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Background>
+        <ImageBrush ImageSource="/PinkBlossom.jpg" />
+    </UserControl.Background>
+    <Grid Width="300" Height="450">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <ScrollViewer>
+                <ItemsControl ItemsSource="{Binding puzzles}" x:Name="Items">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Button Content="{Binding entry.Puzzle.Size}" CommandParameter="{Binding}" Command="{Binding DataContext.GoToPuzzle, ElementName=Items}">
+                                    <Button.Background>
+                                        <Binding Path="vm.IsSolved.Value">
+                                            <Binding.Converter>
+                                                <converters:BooleanConv True="Green" False="Red"/>
+                                            </Binding.Converter>
+                                        </Binding>
+                                    </Button.Background>
+                                </Button>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding vm.chronometer.TotalTime.Value}">
+                                    <TextBlock.Visibility>
+                                        <Binding Path="vm.IsSolved.Value">
+                                            <Binding.Converter>
+                                                <converters:BooleanConv True="Visible" False="Hidden" />
+                                            </Binding.Converter>
+                                        </Binding>
+                                    </TextBlock.Visibility>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <Button Width="Auto" Padding="5" Command="{Binding GoToMenu}" Margin="5">
+                <TextBlock>
+                    Go to main menu
+                </TextBlock>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>
