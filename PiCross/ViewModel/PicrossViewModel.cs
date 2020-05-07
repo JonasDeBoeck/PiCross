@@ -220,22 +220,142 @@ namespace ViewModel
         public MenuScreen(Navigator navigator) : base(navigator)
         {
             GoToSelection = new EasyCommand(() => SwitchTo(navigator.selectionScreen));
+            GoToPuzzleEditor = new EasyCommand(() => SwitchTo(new PuzzleEditorScreen(navigator)));
         }
         public ICommand GoToSelection { get; }
+        public ICommand GoToPuzzleEditor { get; }
+    }
+
+    public class PuzzleEditorScreen : Screen
+    {
+        public PuzzleEditorScreen(Navigator navigator) : base(navigator)
+        {
+            GoToMainMenu = new EasyCommand(() => SwitchTo(new MenuScreen(navigator)));
+        }
+        public ICommand GoToMainMenu { get; }
     }
 
     public class SelectionScreen : Screen
     {
-        public IList<PuzzleViewModel> puzzles { get; }
+        public IList<PuzzleViewModel> backup;
+        public IList<PuzzleViewModel> puzzles { get { return cell.Value; } set { cell.Value = value; } }
+        public Cell<IList<PuzzleViewModel>> cell { get; }
+        public IList<Size> puzzleSizes { get; }
         public SelectionScreen(Navigator navigator) : base(navigator)
         {
             var facade = new PiCrossFacade();
-            puzzles = facade.LoadGameData("../../../../python/picross.zip").PuzzleLibrary.Entries.Select(entry => new PuzzleViewModel(entry)).ToList();
+            cell = Cell.Create<IList<PuzzleViewModel>>(facade.LoadGameData("../../../../python/picross.zip").PuzzleLibrary.Entries.Select(entry => new PuzzleViewModel(entry)).ToList());
+            backup = this.puzzles.Select(puzzle => puzzle).ToList();
+            puzzleSizes = this.puzzles.Select(puzzle => puzzle.entry.Puzzle.Size).Distinct().ToList();
             GoToPuzzle = new GoToPuzzleCommand(navigator, this);
             GoToMenu = new EasyCommand(() => SwitchTo(new MenuScreen(navigator)));
+            FilterUnsolved = new FilterUnsolvedCommand();
+            FilterSize = new FilterSizeCommand();
+            ClearFilters = new ClearFiltersCommand();
+            OrderBySize = new OrderBySizeCommand();
         }
         public ICommand GoToPuzzle { get; }
         public ICommand GoToMenu { get; }
+        public ICommand FilterUnsolved { get; }
+        public ICommand FilterSize { get; }
+        public ICommand ClearFilters { get; }
+        public ICommand OrderBySolved { get; }
+        public ICommand OrderBySize { get; }
+    }
+
+    public class OrderBySizeCommand : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            object[] parameters = (object[])parameter;
+            TextBlock textBlock = (TextBlock)parameters[0];
+            string type = textBlock.Text;
+            SelectionScreen screen = (SelectionScreen)parameters[1];
+            IList<PuzzleViewModel> puzzles = screen.puzzles;
+            if (type.Equals("ASC"))
+            {
+                screen.puzzles = puzzles.OrderBy(puzzle => puzzle.entry.Puzzle.Size.Width).ToList();
+            } else
+            {
+                screen.puzzles = puzzles.OrderByDescending(puzzle => puzzle.entry.Puzzle.Size.Width).ToList();
+            }
+        }
+    }
+
+    public class OrderBySolved : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            SelectionScreen screen = (SelectionScreen)parameter;
+            IList<PuzzleViewModel> puzzles = screen.puzzles;
+            screen.puzzles = puzzles.OrderByDescending(puzzle => puzzle.vm.IsSolved.Value).ToList();
+        }
+    }
+
+    public class ClearFiltersCommand : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            SelectionScreen screen = (SelectionScreen)parameter;
+            screen.puzzles = screen.backup;
+        }
+    }
+
+    public class FilterSizeCommand : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            object[] parameters = (object[])parameter;
+            Size size = (Size)parameters[0];
+            SelectionScreen screen = (SelectionScreen)parameters[1];
+            IList<PuzzleViewModel> puzzles = screen.backup;
+            screen.puzzles = puzzles.Where(puzzle => puzzle.entry.Puzzle.Size == size).ToList();
+        }
+    }
+
+    public class FilterUnsolvedCommand : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            SelectionScreen screen = (SelectionScreen)parameter;
+            IList<PuzzleViewModel> puzzles = screen.puzzles;
+            screen.puzzles = puzzles.Where(puzzle => puzzle.vm.IsSolved.Value == false).ToList();
+        }
     }
 
     public class GoToPuzzleCommand : ICommand

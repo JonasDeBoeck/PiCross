@@ -5,15 +5,61 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:View.screens"
              xmlns:converters="clr-namespace:View.Converters"
+             xmlns:controls="clr-namespace:View.Controls"
+             xmlns:viewModel="clr-namespace:ViewModel;assembly=ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="Window">
+    <UserControl.Resources>
+        <converters:SizeConverter x:Key="SizeConverter" />
+    </UserControl.Resources>
     <UserControl.Background>
         <ImageBrush ImageSource="/PinkBlossom.jpg" />
     </UserControl.Background>
     <Grid Width="300" Height="450">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button Content="Clear filters" Command="{Binding ClearFilters}" CommandParameter="{Binding}"/>
+            <Button Content="Order by solved" Command="{Binding OrderBySolved}" CommandParameter="{Binding}"/>
+            <ComboBox x:Name="orderBySize">
+                <TextBlock>ASC</TextBlock>
+                <TextBlock>DESC</TextBlock>
+            </ComboBox>
+            <Button Content="Order by size" Command="{Binding OrderBySize}">
+                <Button.CommandParameter>
+                    <MultiBinding>
+                        <MultiBinding.Converter>
+                            <converters:MultibindingConverter/>
+                        </MultiBinding.Converter>
+                        <MultiBinding.Bindings>
+                            <Binding Path="SelectedItem" ElementName="orderBySize"/>
+                            <Binding ElementName="Window" Path="DataContext"/>
+                        </MultiBinding.Bindings>
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
+            <Button Content="Show only unsolved puzzles" Command="{Binding FilterUnsolved}" CommandParameter="{Binding}"/>
+            <ComboBox ItemsSource="{Binding puzzleSizes}" x:Name="Combobox">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource SizeConverter}}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <Button Content="Filter size" Command="{Binding FilterSize}">
+                <Button.CommandParameter>
+                    <MultiBinding>
+                        <MultiBinding.Converter>
+                            <converters:MultibindingConverter/>
+                        </MultiBinding.Converter>
+                        <MultiBinding.Bindings>
+                            <Binding Path="SelectedItem" ElementName="Combobox"/>
+                            <Binding ElementName="Window" Path="DataContext"/>
+                        </MultiBinding.Bindings>
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
             <ScrollViewer>
-                <ItemsControl ItemsSource="{Binding puzzles}" x:Name="Items">
+                <ItemsControl ItemsSource="{Binding cell.Value}" x:Name="Items">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -26,15 +72,31 @@
                                         </Binding>
                                     </Button.Background>
                                 </Button>
-                                <TextBlock HorizontalAlignment="Center" Text="{Binding vm.chronometer.TotalTime.Value}">
-                                    <TextBlock.Visibility>
+                                <StackPanel>
+                                    <StackPanel.Visibility>
                                         <Binding Path="vm.IsSolved.Value">
                                             <Binding.Converter>
                                                 <converters:BooleanConv True="Visible" False="Hidden" />
                                             </Binding.Converter>
                                         </Binding>
-                                    </TextBlock.Visibility>
-                                </TextBlock>
+                                    </StackPanel.Visibility>
+                                    <TextBlock HorizontalAlignment="Center" Text="{Binding vm.chronometer.TotalTime.Value}" />
+                                    <!--<controls:PiCrossControl x:Name="picrossControl" Grid="{Binding vm.Grid}">
+                                        <controls:PiCrossControl.SquareTemplate>
+                                            <DataTemplate>
+                                                <Rectangle Width="10" Height="10" Stroke="Black">
+                                                    <Rectangle.Fill>
+                                                        <Binding Path="Square.Contents.Value">
+                                                            <Binding.Converter>
+                                                                <viewModel:SquareConverter Empty="White" Filled="Black" Unknown="Gray"/>
+                                                            </Binding.Converter>
+                                                        </Binding>
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                            </DataTemplate>
+                                        </controls:PiCrossControl.SquareTemplate>
+                                    </controls:PiCrossControl>-->
+                                </StackPanel>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

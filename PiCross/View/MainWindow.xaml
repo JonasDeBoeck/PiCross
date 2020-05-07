@@ -19,6 +19,9 @@
             <DataTemplate x:Name="Game" DataType="{x:Type local:PuzzleScreen}">
                 <screens:Game DataContext="{Binding}"/>
             </DataTemplate>
+            <DataTemplate x:Name="PuzzleEditor" DataType="{x:Type local:PuzzleEditorScreen}">
+                <screens:PuzzleEditor DataContext="{Binding}"/>
+            </DataTemplate>
         </ContentPresenter.Resources>
     </ContentPresenter>
 </Window>

@@ -59,6 +59,9 @@
     <Compile Include="screens\Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
     </Compile>
+    <Compile Include="screens\PuzzleEditor.xaml.cs">
+      <DependentUpon>PuzzleEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="screens\PuzzleSelection.xaml.cs">
       <DependentUpon>PuzzleSelection.xaml</DependentUpon>
     </Compile>
@@ -92,6 +95,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="screens\PuzzleEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="screens\PuzzleSelection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
