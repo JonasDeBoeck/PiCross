@@ -35,7 +35,6 @@ namespace ViewModel
             this.chronometer = new Chronometer();
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(250);
-            chronometer.Start();
             timer.Tick += (o, s) => chronometer.Tick();
             timer.Start();
         }
@@ -252,6 +251,8 @@ namespace ViewModel
             FilterUnsolved = new FilterUnsolvedCommand();
             FilterSize = new FilterSizeCommand();
             ClearFilters = new ClearFiltersCommand();
+            OrderBySolved = new OrderBySolvedCommand();
+            OrderByUnsolved = new OrderByUnsolvedCommand();
             OrderBySize = new OrderBySizeCommand();
         }
         public ICommand GoToPuzzle { get; }
@@ -260,6 +261,7 @@ namespace ViewModel
         public ICommand FilterSize { get; }
         public ICommand ClearFilters { get; }
         public ICommand OrderBySolved { get; }
+        public ICommand OrderByUnsolved { get; }
         public ICommand OrderBySize { get; }
     }
 
@@ -275,21 +277,38 @@ namespace ViewModel
         public void Execute(object parameter)
         {
             object[] parameters = (object[])parameter;
-            TextBlock textBlock = (TextBlock)parameters[0];
-            string type = textBlock.Text;
+            string type = (string)parameters[0];
             SelectionScreen screen = (SelectionScreen)parameters[1];
             IList<PuzzleViewModel> puzzles = screen.puzzles;
             if (type.Equals("ASC"))
             {
                 screen.puzzles = puzzles.OrderBy(puzzle => puzzle.entry.Puzzle.Size.Width).ToList();
-            } else
+            }
+            else
             {
                 screen.puzzles = puzzles.OrderByDescending(puzzle => puzzle.entry.Puzzle.Size.Width).ToList();
             }
         }
     }
 
-    public class OrderBySolved : ICommand
+    public class OrderByUnsolvedCommand : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            SelectionScreen screen = (SelectionScreen)parameter;
+            IList<PuzzleViewModel> puzzles = screen.puzzles;
+            screen.puzzles = puzzles.OrderBy(puzzle => puzzle.vm.IsSolved.Value).ToList();
+        }
+    }
+
+    public class OrderBySolvedCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
@@ -387,10 +406,13 @@ namespace ViewModel
         private PicrossViewModel picrossViewModel;
         public ICommand CheckSolution { get; }
         public ICommand Help { get; }
+        public Navigator navigator;
         public PuzzleScreen(Navigator navigator, PicrossViewModel picrossViewModel) : base(navigator)
         {
             this.picrossViewModel = picrossViewModel;
-            GoToSelection = new EasyCommand(() => SwitchTo(navigator.selectionScreen));
+            picrossViewModel.chronometer.Start();
+            this.navigator = navigator;
+            GoToSelection = new GoToSelectionCommand(this);
             this.CheckSolution = new CheckSolutionCommand(this.picrossViewModel.playablePuzzle);
             this.Help = new HelpCommand(this.picrossViewModel.playablePuzzle);
         }
@@ -399,6 +421,28 @@ namespace ViewModel
             }
         }
         public ICommand GoToSelection { get; }
+    }
+
+    public class GoToSelectionCommand : ICommand
+    {
+        private PuzzleScreen screen;
+        public GoToSelectionCommand(PuzzleScreen screen)
+        {
+            this.screen = screen;
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            screen.PicrossViewModel.chronometer.Pause();
+            screen.SwitchTo(screen.navigator.selectionScreen);
+        }
     }
 
     public class EasyCommand : ICommand
