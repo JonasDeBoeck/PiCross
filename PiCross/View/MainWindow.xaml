@@ -22,6 +22,9 @@
             <DataTemplate x:Name="PuzzleEditor" DataType="{x:Type local:PuzzleEditorScreen}">
                 <screens:PuzzleEditor DataContext="{Binding}"/>
             </DataTemplate>
+            <DataTemplate x:Name="PuzzleEdit" DataType="{x:Type local:PuzzleEditScreen}">
+                <screens:PuzzleEdit DataContext="{Binding}"/>
+            </DataTemplate>
         </ContentPresenter.Resources>
     </ContentPresenter>
 </Window>

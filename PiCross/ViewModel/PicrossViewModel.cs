@@ -209,38 +209,10 @@ namespace ViewModel
         }
     }
 
-    public class SquareConverter : IValueConverter
-    {
-        public object Filled { get; set; }
-        public object Empty { get; set; }
-        public object Unknown { get; set; }
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var square = (Square)value;
-            if (square == Square.EMPTY)
-            {
-                return Empty;
-            }
-            else if (square == Square.FILLED)
-            {
-                return Filled;
-            }
-            else
-            {
-                return Unknown;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public class Navigator : INotifyPropertyChanged
     {
         private Screen currentScreen;
-        public Screen selectionScreen;
+        public SelectionScreen selectionScreen;
         public Navigator()
         {
             this.currentScreen = new MenuScreen(this);
@@ -265,7 +237,7 @@ namespace ViewModel
 
     public abstract class Screen
     {
-        protected readonly Navigator navigator;
+        public readonly Navigator navigator;
 
         protected Screen(Navigator navigator)
         {
@@ -294,8 +266,108 @@ namespace ViewModel
         public PuzzleEditorScreen(Navigator navigator) : base(navigator)
         {
             GoToMainMenu = new EasyCommand(() => SwitchTo(new MenuScreen(navigator)));
+            CreateEmptyPuzzle = new CreateEmptyPuzzleCommand();
         }
         public ICommand GoToMainMenu { get; }
+        public ICommand CreateEmptyPuzzle { get; }
+    }
+
+    public class CreateEmptyPuzzleCommand : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            object[] parameters = (object[])parameter;
+            int rows = Int32.Parse((string)parameters[0]);
+            int columns = Int32.Parse((string)parameters[1]);
+            PuzzleEditorScreen screen = (PuzzleEditorScreen)parameters[2];
+            Puzzle puzzle = Puzzle.CreateEmpty(new Size(columns, rows));
+            var facade = new PiCrossFacade();
+            screen.SwitchTo(new PuzzleEditScreen(screen.navigator, facade.CreatePuzzleEditor(puzzle)));
+        }
+    }
+
+    public class PuzzleEditorSquareViewModel
+    {
+        public IPuzzleEditorSquare Square { get; }
+        public PuzzleEditorSquareViewModel (IPuzzleEditorSquare square)
+        {
+            this.Square = square;
+            ChangeContentsEditorSquare = new ChangeContentsEditorSquareCommand();
+        }
+        public ICommand ChangeContentsEditorSquare { get; }
+    }
+
+    public class ChangeContentsEditorSquareCommand : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            PuzzleEditorSquareViewModel square = (PuzzleEditorSquareViewModel)parameter;
+            square.Square.IsFilled.Value = !square.Square.IsFilled.Value;
+        }
+    }
+
+    public class PuzzleEditScreen : Screen
+    {
+        public IPuzzleEditor Editor { get; }
+        public IGrid<PuzzleEditorSquareViewModel> Grid { get; }
+        public PuzzleEditScreen(Navigator navigator, IPuzzleEditor editor) : base(navigator)
+        {
+            this.Editor = editor;
+            Grid = Editor.Grid.Map(square => new PuzzleEditorSquareViewModel(square));
+            GoBack = new EasyCommand(() => SwitchTo(new PuzzleEditorScreen(navigator)));
+            SavePuzzle = new SavePuzzleCommand();
+        }
+
+        public ICommand GoBack { get; }
+        public ICommand SavePuzzle { get; }
+    }
+
+    public class SavePuzzleCommand : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            PuzzleEditScreen screen = (PuzzleEditScreen)parameter;
+            screen.Editor.ResolveAmbiguity();
+            var facade = new PiCrossFacade();
+            bool am = false;
+            foreach (IPuzzleEditorSquare square in screen.Editor.Grid.Items)
+            {
+                if (square.Ambiguity.Value == Ambiguity.Ambiguous)
+                {
+                    am = true;
+                    break;
+                }
+            }
+            if (!am)
+            {
+                IGameData gameData = facade.LoadGameData("../../../../python/picross.zip", true);
+                Puzzle puzzle = screen.Editor.BuildPuzzle();
+                IPuzzleLibraryEntry entry = gameData.PuzzleLibrary.Create(puzzle, "Jonas");
+                screen.navigator.selectionScreen.cell.Value.Add(new PuzzleViewModel(entry));
+                screen.SwitchTo(new MenuScreen(screen.navigator));
+            } 
+        }
     }
 
     public class SelectionScreen : Screen

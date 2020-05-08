@@ -1,4 +1,5 @@
 ﻿using DataStructures;
+using PiCross;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -52,6 +53,59 @@ namespace View.Converters
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class AmbiguityConverter : IValueConverter
+    {
+        public object Ambiguous { get; set; }
+        public object Unambiguous { get; set; }
+        public object Unknown { get; set; }
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((Ambiguity) value == Ambiguity.Ambiguous)
+            {
+                return Ambiguous;
+            } else if ((Ambiguity)value == Ambiguity.Unambiguous)
+            {
+                return Unambiguous;
+            } else
+            {
+                return Unknown;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class SquareConverter : IValueConverter
+    {
+        public object Filled { get; set; }
+        public object Empty { get; set; }
+        public object Unknown { get; set; }
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var square = (Square)value;
+            if (square == Square.EMPTY)
+            {
+                return Empty;
+            }
+            else if (square == Square.FILLED)
+            {
+                return Filled;
+            }
+            else
+            {
+                return Unknown;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

@@ -89,7 +89,7 @@
                                                     <Rectangle.Fill>
                                                         <Binding Path="Square.Contents.Value">
                                                             <Binding.Converter>
-                                                                <viewModel:SquareConverter Empty="Transparent" Filled="Black"/>
+                                                                <converters:SquareConverter Empty="Transparent" Filled="Black"/>
                                                             </Binding.Converter>
                                                         </Binding>
                                                     </Rectangle.Fill>

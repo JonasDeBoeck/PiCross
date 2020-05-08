@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:View.screens"
+             xmlns:converters="clr-namespace:View.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Background>
@@ -11,6 +12,24 @@
     </UserControl.Background>
     <Grid Width="300" Height="450">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Label Content="Rows" />
+            <TextBox x:Name="Rows"/>
+            <Label Content="Columns" />
+            <TextBox x:Name="Columns"/>
+            <Button Width="Auto" Padding="5" Command="{Binding CreateEmptyPuzzle}" Content="Create empty puzzle" x:Name="CreateButton">
+                <Button.CommandParameter>
+                    <MultiBinding>
+                        <MultiBinding.Converter>
+                            <converters:MultibindingConverter />
+                        </MultiBinding.Converter>
+                        <MultiBinding.Bindings>
+                            <Binding Path="Text" ElementName="Rows"/>
+                            <Binding ElementName="Columns" Path="Text"/>
+                            <Binding ElementName="CreateButton" Path="DataContext" />
+                        </MultiBinding.Bindings>
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
             <Button Width="Auto" Padding="5" Command="{Binding GoToMainMenu}">
                 <TextBlock>
                     Back to main menu

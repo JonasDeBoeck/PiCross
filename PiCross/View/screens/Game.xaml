@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ViewModel;assembly=ViewModel"
              xmlns:controls="clr-namespace:View.Controls"
              xmlns:converters="clr-namespace:View.Converters"
              mc:Ignorable="d" 
@@ -29,7 +28,7 @@
                                     <Rectangle.Fill>
                                         <Binding Path="Square.Contents.Value">
                                             <Binding.Converter>
-                                                <local:SquareConverter Empty="White" Filled="Black" Unknown="Gray"/>
+                                                <converters:SquareConverter Empty="White" Filled="Black" Unknown="Gray"/>
                                             </Binding.Converter>
                                         </Binding>
                                     </Rectangle.Fill>
