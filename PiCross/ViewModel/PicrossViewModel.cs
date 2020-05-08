@@ -26,6 +26,7 @@ namespace ViewModel
         public Cell<bool> IsSolved { get; set; }
         private readonly DispatcherTimer timer;
         public Chronometer chronometer { get; }
+        public Vector2D start;
         public PicrossViewModel(Puzzle puzzle)
         {
             IsSolved = Cell.Create<bool>(false);
@@ -44,15 +45,78 @@ namespace ViewModel
     {
         private IPlayablePuzzleSquare square;
         public IPlayablePuzzleSquare Square { get; set; }
-        public ICommand OnClick { get; }
+        public ICommand ChangeSquareContent { get; }
+        public ICommand ContentRangeChanger { get; }
         public SquareViewModel(IPlayablePuzzleSquare square)
         {
             Square = square;
-            OnClick = new OnClickCommand();
+            ChangeSquareContent = new ChangeSquareContentsCommand();
+            ContentRangeChanger = new ContentRangeChangerCommand();
         }
     }
 
-    public class OnClickCommand : ICommand
+    public class ContentRangeChangerCommand : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            object[] parameters = (object[])parameter;
+            PuzzleScreen screen = (PuzzleScreen)parameters[0];
+            SquareViewModel square = (SquareViewModel)parameters[1];
+            Vector2D start = screen.PicrossViewModel.start;
+            if (start == null)
+            {
+                screen.PicrossViewModel.start = square.Square.Position;
+            } else
+            {
+                int smallest;
+                int biggest;
+                if (start.X == square.Square.Position.X)
+                {
+                    if (square.Square.Position.Y < start.Y)
+                    {
+                        smallest = square.Square.Position.Y;
+                        biggest = start.Y;
+                    } else
+                    {
+                        smallest = start.Y;
+                        biggest = square.Square.Position.Y;
+                    }
+                    while(smallest <= biggest)
+                    {
+                        screen.PicrossViewModel.Grid[new Vector2D(start.X, smallest)].Square.Contents.Value = Square.FILLED;
+                        smallest++;
+                    }
+                } else if (start.Y == square.Square.Position.Y)
+                {
+                    if (square.Square.Position.X < start.X)
+                    {
+                        smallest = square.Square.Position.X;
+                        biggest = start.X;
+                    }
+                    else
+                    {
+                        smallest = start.X;
+                        biggest = square.Square.Position.X;
+                    }
+                    while (smallest <= biggest)
+                    {
+                        screen.PicrossViewModel.Grid[new Vector2D(smallest, start.Y)].Square.Contents.Value = Square.FILLED;
+                        smallest++;
+                    }
+                }
+                screen.PicrossViewModel.start = null;
+            }
+        }
+    }
+
+    public class ChangeSquareContentsCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 

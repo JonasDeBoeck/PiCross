@@ -24,7 +24,7 @@
                 <controls:PiCrossControl x:Name="picrossControl" Grid.RowSpan="2" Grid="{Binding PicrossViewModel.Grid}" RowConstraints="{Binding PicrossViewModel.RowConstraints}" ColumnConstraints="{Binding PicrossViewModel.ColumnConstraints}">
                     <controls:PiCrossControl.SquareTemplate>
                         <DataTemplate>
-                            <Button BorderThickness="0" Command="{Binding OnClick}" CommandParameter="{Binding}">
+                            <Button BorderThickness="0" Command="{Binding ChangeSquareContent}" CommandParameter="{Binding}">
                                 <Rectangle Width="32" Height="32" Stroke="Black">
                                     <Rectangle.Fill>
                                         <Binding Path="Square.Contents.Value">
@@ -34,6 +34,21 @@
                                         </Binding>
                                     </Rectangle.Fill>
                                 </Rectangle>
+                                <Button.InputBindings>
+                                    <MouseBinding Gesture="ALT+LeftClick" Command="{Binding ContentRangeChanger}">
+                                        <MouseBinding.CommandParameter>
+                                            <MultiBinding>
+                                                <MultiBinding.Converter>
+                                                    <converters:MultibindingConverter />
+                                                </MultiBinding.Converter>
+                                                <MultiBinding.Bindings>
+                                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=controls:PiCrossControl}" Path="DataContext"/>
+                                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Button}" Path="DataContext" />
+                                                </MultiBinding.Bindings>
+                                            </MultiBinding>
+                                        </MouseBinding.CommandParameter>
+                                    </MouseBinding>
+                                </Button.InputBindings>
                             </Button>
                         </DataTemplate>
                     </controls:PiCrossControl.SquareTemplate>
