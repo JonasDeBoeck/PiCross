@@ -10,44 +10,65 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="Window">
+    <UserControl.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#00DDFF" Offset="0.0"/>
+            <GradientStop Color="#FF00D4" Offset="1.0"/>
+        </LinearGradientBrush>
+    </UserControl.Background>
     <UserControl.Resources>
         <converters:SizeConverter x:Key="SizeConverter" />
+        <Style TargetType="Button" x:Key="Buttons" >
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="Background" Value="#00ACEE" />
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="MaxWidth" Value="200" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Margin" Value="0 0 0 5"/>
+        </Style>
+        <Style TargetType="Button" x:Key="MenuItems">
+            <Setter Property="Padding" Value="10" />
+        </Style>
     </UserControl.Resources>
-    <UserControl.Background>
-        <ImageBrush ImageSource="/PinkBlossom.jpg" />
-    </UserControl.Background>
     <Grid Width="300" Height="450">
-        <ScrollViewer>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button Content="Clear filters" Command="{Binding ClearFilters}" CommandParameter="{Binding}"/>
-            <Button Content="Order by solved" Command="{Binding OrderBySolved}" CommandParameter="{Binding}"/>
-            <Button Content="Order by unsolved" Command="{Binding OrderByUnsolved}" CommandParameter="{Binding}" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="3*"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0" Margin="5 0 0 0">
+            <Button Content="Clear filters" Command="{Binding ClearFilters}" CommandParameter="{Binding}" Style="{StaticResource Buttons}"/>
+            <Button Content="Order by solved" Command="{Binding OrderBySolved}" CommandParameter="{Binding}" Style="{StaticResource Buttons}"/>
+            <Button Content="Order by unsolved" Command="{Binding OrderByUnsolved}" CommandParameter="{Binding}" Style="{StaticResource Buttons}"/>
             <ComboBox x:Name="orderBySize">
                 <ComboBoxItem IsSelected="True" Content="ASC" />
                 <ComboBoxItem Content="DESC" />
             </ComboBox>
-            <Button Content="Order by size" Command="{Binding OrderBySize}">
-                <Button.CommandParameter>
-                    <MultiBinding>
-                        <MultiBinding.Converter>
-                            <converters:MultibindingConverter/>
-                        </MultiBinding.Converter>
-                        <MultiBinding.Bindings>
-                            <Binding Path="SelectedItem.Content" ElementName="orderBySize"/>
-                            <Binding ElementName="Window" Path="DataContext"/>
-                        </MultiBinding.Bindings>
-                    </MultiBinding>
-                </Button.CommandParameter>
-            </Button>
-            <Button Content="Show only unsolved puzzles" Command="{Binding FilterUnsolved}" CommandParameter="{Binding}"/>
-            <ComboBox ItemsSource="{Binding puzzleSizes}" x:Name="Combobox">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource SizeConverter}}"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-                <Button Content="Filter size" Command="{Binding FilterSize}">
+            <Button Content="Order by size" Command="{Binding OrderBySize}" Style="{StaticResource Buttons}">
+                    <Button.CommandParameter>
+                        <MultiBinding>
+                            <MultiBinding.Converter>
+                                <converters:MultibindingConverter/>
+                            </MultiBinding.Converter>
+                            <MultiBinding.Bindings>
+                                <Binding Path="SelectedItem.Content" ElementName="orderBySize"/>
+                                <Binding ElementName="Window" Path="DataContext"/>
+                            </MultiBinding.Bindings>
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                </Button>
+            <Button Content="Show only unsolved puzzles" Command="{Binding FilterUnsolved}" CommandParameter="{Binding}" Style="{StaticResource Buttons}"/>
+                <ComboBox ItemsSource="{Binding puzzleSizes}" x:Name="Combobox" >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource SizeConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            <Button Content="Filter size" Command="{Binding FilterSize}" Style="{StaticResource Buttons}">
                     <Button.CommandParameter>
                         <MultiBinding>
                             <MultiBinding.Converter>
@@ -60,11 +81,13 @@
                         </MultiBinding>
                     </Button.CommandParameter>
                 </Button>
+            </StackPanel>
+            <StackPanel Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Margin="0 0 5 0">
                 <ItemsControl ItemsSource="{Binding cell.Value}" x:Name="Items">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <Button Content="{Binding entry.Puzzle.Size}" CommandParameter="{Binding}" Command="{Binding DataContext.GoToPuzzle, ElementName=Items}">
+                                <Button Content="{Binding entry.Puzzle.Size}" CommandParameter="{Binding}" Command="{Binding DataContext.GoToPuzzle, ElementName=Items}" Style="{StaticResource MenuItems}">
                                     <Button.Background>
                                         <Binding Path="vm.IsSolved.Value">
                                             <Binding.Converter>
@@ -102,12 +125,11 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <Button Width="Auto" Padding="5" Command="{Binding GoToMenu}" Margin="5">
+                </StackPanel>
+                <Button Padding="5" Command="{Binding GoToMenu}" Margin="5" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource Buttons}" Height="50">
                 <TextBlock>
                     Go to main menu
                 </TextBlock>
             </Button>
-        </StackPanel>
-        </ScrollViewer>
     </Grid>
 </UserControl>

@@ -284,12 +284,15 @@ namespace ViewModel
         public void Execute(object parameter)
         {
             object[] parameters = (object[])parameter;
-            int rows = Int32.Parse((string)parameters[0]);
-            int columns = Int32.Parse((string)parameters[1]);
-            PuzzleEditorScreen screen = (PuzzleEditorScreen)parameters[2];
-            Puzzle puzzle = Puzzle.CreateEmpty(new Size(columns, rows));
-            var facade = new PiCrossFacade();
-            screen.SwitchTo(new PuzzleEditScreen(screen.navigator, facade.CreatePuzzleEditor(puzzle)));
+            if (!parameters[0].Equals("") && !parameters[1].Equals(""))
+            {
+                int rows = Int32.Parse((string)parameters[0]);
+                int columns = Int32.Parse((string)parameters[1]);
+                PuzzleEditorScreen screen = (PuzzleEditorScreen)parameters[2];
+                Puzzle puzzle = Puzzle.CreateEmpty(new Size(columns, rows));
+                var facade = new PiCrossFacade();
+                screen.SwitchTo(new PuzzleEditScreen(screen.navigator, facade.CreatePuzzleEditor(puzzle)));
+            }
         }
     }
 

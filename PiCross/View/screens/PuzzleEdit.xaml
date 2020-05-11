@@ -10,36 +10,64 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Background>
-        <ImageBrush ImageSource="/PinkBlossom.jpg" />
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#00DDFF" Offset="0.0"/>
+            <GradientStop Color="#FF00D4" Offset="1.0"/>
+        </LinearGradientBrush>
     </UserControl.Background>
+    <UserControl.Resources>
+        <Style TargetType="Button" x:Key="Buttons" >
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="Background" Value="#00ACEE" />
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="MaxWidth" Value="200" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style TargetType="Label" x:Key="Labels" >
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="20px" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="TextBox" x:Key="TextBoxes">
+            <Setter Property="Margin" Value="0 0 0 5" />
+            <Setter Property="Height" Value="25" />
+            <Setter Property="Width" Value="250" />
+            <Setter Property="Padding" Value="5" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
-        <StackPanel>
-            <controls:PiCrossControl x:Name="picrossControl" Grid.RowSpan="2" Grid="{Binding Grid}">
-                <controls:PiCrossControl.SquareTemplate>
-                    <DataTemplate>
-                        <Button BorderThickness="0" Command="{Binding ChangeContentsEditorSquare}" CommandParameter="{Binding}">
-                            <Rectangle Width="32" Height="32">
-                                <Rectangle.Fill>
-                                    <Binding Path="Square.IsFilled.Value">
-                                        <Binding.Converter>
-                                            <converters:BooleanConv False="White" True="Black"/>
-                                        </Binding.Converter>
-                                    </Binding>
-                                </Rectangle.Fill>
-                                <Rectangle.Stroke>
-                                    <Binding Path="Square.Ambiguity.Value">
-                                        <Binding.Converter>
-                                            <converters:AmbiguityConverter Ambiguous="Red" Unambiguous="Black" Unknown="Black"/>
-                                        </Binding.Converter>
-                                    </Binding>
-                                </Rectangle.Stroke>
-                            </Rectangle>
-                        </Button>
-                    </DataTemplate>
-                </controls:PiCrossControl.SquareTemplate>
-            </controls:PiCrossControl>
-            <Button Command="{Binding GoBack}" Content="Go back"/>
-            <Button Command="{Binding SavePuzzle}" Content="Save puzzle" CommandParameter="{Binding}"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <controls:PiCrossControl x:Name="picrossControl" Grid.Column="0" Grid="{Binding Grid}" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0">
+            <controls:PiCrossControl.SquareTemplate>
+                <DataTemplate>
+                    <Button BorderThickness="0" Command="{Binding ChangeContentsEditorSquare}" CommandParameter="{Binding}">
+                        <Rectangle Width="32" Height="32">
+                            <Rectangle.Fill>
+                                <Binding Path="Square.IsFilled.Value">
+                                    <Binding.Converter>
+                                        <converters:BooleanConv False="White" True="Black"/>
+                                    </Binding.Converter>
+                                </Binding>
+                            </Rectangle.Fill>
+                            <Rectangle.Stroke>
+                                <Binding Path="Square.Ambiguity.Value">
+                                    <Binding.Converter>
+                                        <converters:AmbiguityConverter Ambiguous="Red" Unambiguous="Black" Unknown="Black"/>
+                                    </Binding.Converter>
+                                </Binding>
+                            </Rectangle.Stroke>
+                        </Rectangle>
+                    </Button>
+                </DataTemplate>
+            </controls:PiCrossControl.SquareTemplate>
+        </controls:PiCrossControl>
+        <StackPanel VerticalAlignment="Center" Grid.Column="1" HorizontalAlignment="Left" Margin="5 0 0 0">
+            <Button Command="{Binding GoBack}" Content="Go back" Style="{StaticResource Buttons}" Margin="0 0 0 5"/>
+            <Button Command="{Binding SavePuzzle}" Content="Save puzzle" CommandParameter="{Binding}" Style="{StaticResource Buttons}" Margin="0 5 0 0"/>
         </StackPanel>
     </Grid>
 </UserControl>

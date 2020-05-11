@@ -7,12 +7,23 @@
              xmlns:converters="clr-namespace:View.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        
-    </UserControl.Resources>
     <UserControl.Background>
-        <ImageBrush ImageSource="/PinkBlossom.jpg" />
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#00DDFF" Offset="0.0"/>
+            <GradientStop Color="#FF00D4" Offset="1.0"/>
+        </LinearGradientBrush>
     </UserControl.Background>
+    <UserControl.Resources>
+        <converters:SizeConverter x:Key="SizeConverter" />
+        <Style TargetType="Button" x:Key="Buttons" >
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="Background" Value="#00ACEE" />
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="MaxWidth" Value="200" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Margin" Value="0 0 0 5"/>
+        </Style>
+    </UserControl.Resources>
     <ScrollViewer>
         <StackPanel>
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
@@ -111,9 +122,9 @@
                     </Binding>
                 </TextBlock.Visibility>
             </TextBlock>
-            <Button Content="Check Solution" Command="{Binding CheckSolution}" CommandParameter="{Binding}" Width="Auto" />
-            <Button Command="{Binding GoToSelection}" Width="Auto" Content="Go Back" />
-            <Button Command ="{Binding Help}" Width="Auto" Content="Help"/>
+            <Button Content="Check Solution" Command="{Binding CheckSolution}" CommandParameter="{Binding}" Style="{StaticResource Buttons}" />
+            <Button Command="{Binding GoToSelection}" Width="Auto" Content="Go Back" Style="{StaticResource Buttons}" />
+            <Button Command ="{Binding Help}" Width="Auto" Content="Help" Style="{StaticResource Buttons}"/>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
