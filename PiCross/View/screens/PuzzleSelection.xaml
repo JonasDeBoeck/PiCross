@@ -82,6 +82,7 @@
                     </Button.CommandParameter>
                 </Button>
             </StackPanel>
+        <ScrollViewer>
             <StackPanel Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Margin="0 0 5 0">
                 <ItemsControl ItemsSource="{Binding cell.Value}" x:Name="Items">
                     <ItemsControl.ItemTemplate>
@@ -125,8 +126,9 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                </StackPanel>
-                <Button Padding="5" Command="{Binding GoToMenu}" Margin="5" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource Buttons}" Height="50">
+            </StackPanel>
+        </ScrollViewer>
+        <Button Padding="5" Command="{Binding GoToMenu}" Margin="5" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource Buttons}" Height="50">
                 <TextBlock>
                     Go to main menu
                 </TextBlock>

@@ -32,6 +32,7 @@
             <Setter Property="Height" Value="25" />
             <Setter Property="Width" Value="250" />
             <Setter Property="Padding" Value="5" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
         </Style>
     </UserControl.Resources>
     <Grid Width="300" Height="450">
