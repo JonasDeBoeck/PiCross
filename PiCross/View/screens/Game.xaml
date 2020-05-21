@@ -83,7 +83,15 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Width="32" Height="32" Text="{Binding Value}" TextAlignment="Center" FontWeight="Heavy" />
+                                        <TextBlock Width="32" Height="32" Text="{Binding Value}" TextAlignment="Center" FontWeight="Heavy" >
+                                            <TextBlock.Background >
+                                                <Binding Path="IsSatisfied.Value">
+                                                    <Binding.Converter>
+                                                        <converters:BooleanConv True="Green" False="Red" />
+                                                    </Binding.Converter>
+                                                </Binding>
+                                            </TextBlock.Background>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -107,7 +115,15 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Width="32" Height="32" Text="{Binding Value}" TextAlignment="Center" FontWeight="Heavy"/>
+                                        <TextBlock Width="32" Height="32" Text="{Binding Value}" TextAlignment="Center" FontWeight="Heavy">
+                                            <TextBlock.Background >
+                                                <Binding Path="IsSatisfied.Value">
+                                                    <Binding.Converter>
+                                                        <converters:BooleanConv True="Green" False="Red" />
+                                                    </Binding.Converter>
+                                                </Binding>
+                                            </TextBlock.Background>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

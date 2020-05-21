@@ -105,7 +105,7 @@
                                             </Binding.Converter>
                                         </Binding>
                                     </StackPanel.Visibility>
-                                    <TextBlock HorizontalAlignment="Center" Text="{Binding vm.chronometer.TotalTime.Value}" />
+                                    <TextBlock HorizontalAlignment="Center" Text="{Binding vm.chronometer.TotalTime.Value}" Foreground="White"/>
                                     <controls:PiCrossControl x:Name="picrossControl" Grid="{Binding vm.Grid}" HorizontalAlignment="Center">
                                         <controls:PiCrossControl.SquareTemplate>
                                             <DataTemplate>
