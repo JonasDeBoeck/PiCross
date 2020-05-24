@@ -160,7 +160,7 @@ namespace ViewModel
             vm.IsSolved.Value = this.puzzle.IsSolved.Value;
             if (this.puzzle.IsSolved.Value)
             {
-                vm.chronometer.Pause();
+                vm.Chronometer.Pause();
             }
         }
     }
@@ -234,6 +234,7 @@ namespace ViewModel
                 Puzzle puzzle = screen.Editor.BuildPuzzle();
                 IPuzzleLibraryEntry entry = gameData.PuzzleLibrary.Create(puzzle, "Jonas");
                 screen.navigator.selectionScreen.cell.Value.Add(new PuzzleViewModel(entry));
+                screen.navigator.selectionScreen.PuzzleSizes.Add(puzzle.Size);
                 screen.SwitchTo(new MenuScreen(screen.navigator));
             }
         }
@@ -253,14 +254,14 @@ namespace ViewModel
             object[] parameters = (object[])parameter;
             string type = (string)parameters[0];
             SelectionScreen screen = (SelectionScreen)parameters[1];
-            IList<PuzzleViewModel> puzzles = screen.puzzles;
+            IList<PuzzleViewModel> puzzles = screen.Puzzles;
             if (type.Equals("ASC"))
             {
-                screen.puzzles = puzzles.OrderBy(puzzle => puzzle.entry.Puzzle.Size.Width).ToList();
+                screen.Puzzles = puzzles.OrderBy(puzzle => puzzle.Entry.Puzzle.Size.Width).ToList();
             }
             else
             {
-                screen.puzzles = puzzles.OrderByDescending(puzzle => puzzle.entry.Puzzle.Size.Width).ToList();
+                screen.Puzzles = puzzles.OrderByDescending(puzzle => puzzle.Entry.Puzzle.Size.Width).ToList();
             }
         }
     }
@@ -277,8 +278,8 @@ namespace ViewModel
         public void Execute(object parameter)
         {
             SelectionScreen screen = (SelectionScreen)parameter;
-            IList<PuzzleViewModel> puzzles = screen.puzzles;
-            screen.puzzles = puzzles.OrderBy(puzzle => puzzle.vm.IsSolved.Value).ToList();
+            IList<PuzzleViewModel> puzzles = screen.Puzzles;
+            screen.Puzzles = puzzles.OrderBy(puzzle => puzzle.Vm.IsSolved.Value).ToList();
         }
     }
 
@@ -294,8 +295,8 @@ namespace ViewModel
         public void Execute(object parameter)
         {
             SelectionScreen screen = (SelectionScreen)parameter;
-            IList<PuzzleViewModel> puzzles = screen.puzzles;
-            screen.puzzles = puzzles.OrderByDescending(puzzle => puzzle.vm.IsSolved.Value).ToList();
+            IList<PuzzleViewModel> puzzles = screen.Puzzles;
+            screen.Puzzles = puzzles.OrderByDescending(puzzle => puzzle.Vm.IsSolved.Value).ToList();
         }
     }
 
@@ -311,7 +312,7 @@ namespace ViewModel
         public void Execute(object parameter)
         {
             SelectionScreen screen = (SelectionScreen)parameter;
-            screen.puzzles = screen.backup;
+            screen.Puzzles = screen.backup;
         }
     }
 
@@ -330,7 +331,7 @@ namespace ViewModel
             Size size = (Size)parameters[0];
             SelectionScreen screen = (SelectionScreen)parameters[1];
             IList<PuzzleViewModel> puzzles = screen.backup;
-            screen.puzzles = puzzles.Where(puzzle => puzzle.entry.Puzzle.Size == size).ToList();
+            screen.Puzzles = puzzles.Where(puzzle => puzzle.Entry.Puzzle.Size == size).ToList();
         }
     }
 
@@ -346,8 +347,8 @@ namespace ViewModel
         public void Execute(object parameter)
         {
             SelectionScreen screen = (SelectionScreen)parameter;
-            IList<PuzzleViewModel> puzzles = screen.puzzles;
-            screen.puzzles = puzzles.Where(puzzle => puzzle.vm.IsSolved.Value == false).ToList();
+            IList<PuzzleViewModel> puzzles = screen.Puzzles;
+            screen.Puzzles = puzzles.Where(puzzle => puzzle.Vm.IsSolved.Value == false).ToList();
         }
     }
 
@@ -371,7 +372,7 @@ namespace ViewModel
         public void Execute(object parameter)
         {
             PuzzleViewModel puzzle = (PuzzleViewModel)parameter;
-            screen.SwitchTo(new PuzzleScreen(navigator, puzzle.vm));
+            screen.SwitchTo(new PuzzleScreen(navigator, puzzle.Vm));
         }
     }
 
@@ -392,7 +393,7 @@ namespace ViewModel
 
         public void Execute(object parameter)
         {
-            screen.PicrossViewModel.chronometer.Pause();
+            screen.PicrossViewModel.Chronometer.Pause();
             screen.SwitchTo(screen.navigator.selectionScreen);
         }
     }

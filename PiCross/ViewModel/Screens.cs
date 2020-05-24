@@ -90,15 +90,15 @@ namespace ViewModel
     public class SelectionScreen : Screen
     {
         public IList<PuzzleViewModel> backup;
-        public IList<PuzzleViewModel> puzzles { get { return cell.Value; } set { cell.Value = value; } }
+        public IList<PuzzleViewModel> Puzzles { get { return cell.Value; } set { cell.Value = value; } }
         public Cell<IList<PuzzleViewModel>> cell { get; }
-        public IList<Size> puzzleSizes { get; }
+        public IList<Size> PuzzleSizes { get; }
         public SelectionScreen(Navigator navigator) : base(navigator)
         {
             var facade = new PiCrossFacade();
             cell = Cell.Create<IList<PuzzleViewModel>>(facade.LoadGameData("../../../../python/picross.zip").PuzzleLibrary.Entries.Select(entry => new PuzzleViewModel(entry)).ToList());
-            backup = this.puzzles.Select(puzzle => puzzle).ToList();
-            puzzleSizes = this.puzzles.Select(puzzle => puzzle.entry.Puzzle.Size).Distinct().ToList();
+            backup = this.Puzzles.Select(puzzle => puzzle).ToList();
+            PuzzleSizes = this.Puzzles.Select(puzzle => puzzle.Entry.Puzzle.Size).Distinct().ToList();
             GoToPuzzle = new GoToPuzzleCommand(navigator, this);
             GoToMenu = new EasyCommand(() => SwitchTo(new MenuScreen(navigator)));
             FilterUnsolved = new FilterUnsolvedCommand();
@@ -127,7 +127,7 @@ namespace ViewModel
         public PuzzleScreen(Navigator navigator, PicrossViewModel picrossViewModel) : base(navigator)
         {
             this.picrossViewModel = picrossViewModel;
-            picrossViewModel.chronometer.Start();
+            picrossViewModel.Chronometer.Start();
             this.navigator = navigator;
             GoToSelection = new GoToSelectionCommand(this);
             this.CheckSolution = new CheckSolutionCommand(this.picrossViewModel.playablePuzzle);

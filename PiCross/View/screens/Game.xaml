@@ -34,7 +34,7 @@
                     <RowDefinition Height="3*"/>
                     <RowDefinition Height="1"/>
                 </Grid.RowDefinitions>
-                <controls:PiCrossControl x:Name="picrossControl" Grid.RowSpan="2" Grid="{Binding PicrossViewModel.Grid}" RowConstraints="{Binding PicrossViewModel.RowConstraints}" ColumnConstraints="{Binding PicrossViewModel.ColumnConstraints}">
+                <controls:PiCrossControl x:Name="picrossControl" Grid.RowSpan="2" Grid="{Binding PicrossViewModel.Grid}" RowConstraints="{Binding PicrossViewModel.RowConstraints.Constraints}" ColumnConstraints="{Binding PicrossViewModel.ColumnConstraints.Constraints}">
                     <controls:PiCrossControl.SquareTemplate>
                         <DataTemplate>
                             <Button BorderThickness="0" Command="{Binding ChangeSquareContent}" CommandParameter="{Binding}">
@@ -67,7 +67,7 @@
                     </controls:PiCrossControl.SquareTemplate>
                     <controls:PiCrossControl.RowConstraintsTemplate>
                         <DataTemplate>
-                            <ItemsControl ItemsSource="{Binding Values}">
+                            <ItemsControl ItemsSource="{Binding Values.Values}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -99,7 +99,7 @@
                     </controls:PiCrossControl.RowConstraintsTemplate>
                     <controls:PiCrossControl.ColumnConstraintsTemplate>
                         <DataTemplate>
-                            <ItemsControl ItemsSource="{Binding Values}">
+                            <ItemsControl ItemsSource="{Binding Values.Values}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <StackPanel Orientation="Vertical">
@@ -131,7 +131,7 @@
                     </controls:PiCrossControl.ColumnConstraintsTemplate>
                 </controls:PiCrossControl>
             </Grid>
-            <TextBlock HorizontalAlignment="Center" Text="{Binding PicrossViewModel.chronometer.TotalTime.Value}" Style="{StaticResource TextBlocks}"/>
+            <TextBlock HorizontalAlignment="Center" Text="{Binding PicrossViewModel.Chronometer.TotalTime.Value}" Style="{StaticResource TextBlocks}"/>
             <TextBlock HorizontalAlignment="Center" Text="Good work, you finished this puzzle" Style="{StaticResource TextBlocks}" Margin="0 0 0 5">
                 <TextBlock.Visibility>
                     <Binding Path="PicrossViewModel.IsSolved.Value">

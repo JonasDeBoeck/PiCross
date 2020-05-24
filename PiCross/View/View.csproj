@@ -55,7 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Converters\BooleanToVisibility.cs" />
+    <Compile Include="Converters\Converters.cs" />
     <Compile Include="screens\Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
     </Compile>

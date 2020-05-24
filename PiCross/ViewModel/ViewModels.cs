@@ -3,6 +3,7 @@ using DataStructures;
 using PiCross;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Utility;
@@ -13,11 +14,11 @@ namespace ViewModel
     {
         public IPlayablePuzzle playablePuzzle;
         public IGrid<SquareViewModel> Grid { get; }
-        public IEnumerable<IPlayablePuzzleConstraints> RowConstraints => this.playablePuzzle.RowConstraints;
-        public IEnumerable<IPlayablePuzzleConstraints> ColumnConstraints => this.playablePuzzle.ColumnConstraints;
+        public PlayablePuzzleConstraintsViewModel RowConstraints { get; set; }
+        public PlayablePuzzleConstraintsViewModel ColumnConstraints { get; set; }
         public Cell<bool> IsSolved { get; set; }
         private readonly DispatcherTimer timer;
-        public Chronometer chronometer { get; }
+        public Chronometer Chronometer { get; }
         public Vector2D start;
         public PicrossViewModel(Puzzle puzzle)
         {
@@ -25,11 +26,34 @@ namespace ViewModel
             var facade = new PiCrossFacade();
             playablePuzzle = facade.CreatePlayablePuzzle(puzzle);
             this.Grid = this.playablePuzzle.Grid.Map(square => new SquareViewModel(square));
-            this.chronometer = new Chronometer();
+            this.Chronometer = new Chronometer();
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(250);
-            timer.Tick += (o, s) => chronometer.Tick();
+            timer.Tick += (o, s) => Chronometer.Tick();
             timer.Start();
+
+            RowConstraints = new PlayablePuzzleConstraintsViewModel(this.playablePuzzle.RowConstraints);
+            ColumnConstraints = new PlayablePuzzleConstraintsViewModel(this.playablePuzzle.ColumnConstraints);
+        }
+    }
+
+    public class PlayablePuzzleConstraintsViewModel
+    {
+        public IEnumerable<PlayablePuzzleConstraintsValueViewModel> Constraints { get; set; }
+
+        public PlayablePuzzleConstraintsViewModel (ISequence<IPlayablePuzzleConstraints> constraints)
+        {
+            Constraints = constraints.Map(constraint => new PlayablePuzzleConstraintsValueViewModel(constraint));
+        }
+    }
+
+    public class PlayablePuzzleConstraintsValueViewModel
+    {
+        public IPlayablePuzzleConstraints Values { get; set; }
+
+        public PlayablePuzzleConstraintsValueViewModel (IPlayablePuzzleConstraints constraints)
+        {
+            this.Values = constraints;
         }
     }
 
@@ -58,16 +82,14 @@ namespace ViewModel
         public ICommand ChangeContentsEditorSquare { get; }
     }
 
-    
-
     public class PuzzleViewModel
     {
-        public PicrossViewModel vm { get; }
-        public IPuzzleLibraryEntry entry { get; }
+        public PicrossViewModel Vm { get; }
+        public IPuzzleLibraryEntry Entry { get; }
         public PuzzleViewModel(IPuzzleLibraryEntry entry)
         {
-            this.vm = new PicrossViewModel(entry.Puzzle);
-            this.entry = entry;
+            this.Vm = new PicrossViewModel(entry.Puzzle);
+            this.Entry = entry;
         }
     }
 }

@@ -61,7 +61,7 @@
                     </Button.CommandParameter>
                 </Button>
             <Button Content="Show only unsolved puzzles" Command="{Binding FilterUnsolved}" CommandParameter="{Binding}" Style="{StaticResource Buttons}"/>
-                <ComboBox ItemsSource="{Binding puzzleSizes}" x:Name="Combobox" >
+                <ComboBox ItemsSource="{Binding PuzzleSizes}" x:Name="Combobox" >
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Converter={StaticResource SizeConverter}}"/>
@@ -88,9 +88,9 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <Button Content="{Binding entry.Puzzle.Size}" CommandParameter="{Binding}" Command="{Binding DataContext.GoToPuzzle, ElementName=Items}" Style="{StaticResource MenuItems}">
+                                <Button Content="{Binding Entry.Puzzle.Size}" CommandParameter="{Binding}" Command="{Binding DataContext.GoToPuzzle, ElementName=Items}" Style="{StaticResource MenuItems}">
                                     <Button.Background>
-                                        <Binding Path="vm.IsSolved.Value">
+                                        <Binding Path="Vm.IsSolved.Value">
                                             <Binding.Converter>
                                                 <converters:BooleanConv True="Green" False="Red"/>
                                             </Binding.Converter>
@@ -99,14 +99,14 @@
                                 </Button>
                                 <StackPanel>
                                     <StackPanel.Visibility>
-                                        <Binding Path="vm.IsSolved.Value">
+                                        <Binding Path="Vm.IsSolved.Value">
                                             <Binding.Converter>
                                                 <converters:BooleanConv True="Visible" False="Collapsed" />
                                             </Binding.Converter>
                                         </Binding>
                                     </StackPanel.Visibility>
-                                    <TextBlock HorizontalAlignment="Center" Text="{Binding vm.chronometer.TotalTime.Value}" Foreground="White"/>
-                                    <controls:PiCrossControl x:Name="picrossControl" Grid="{Binding vm.Grid}" HorizontalAlignment="Center">
+                                    <TextBlock HorizontalAlignment="Center" Text="{Binding Vm.Chronometer.TotalTime.Value}" Foreground="White"/>
+                                    <controls:PiCrossControl x:Name="picrossControl" Grid="{Binding Vm.Grid}" HorizontalAlignment="Center">
                                         <controls:PiCrossControl.SquareTemplate>
                                             <DataTemplate>
                                                 <Rectangle Width="5" Height="5">
